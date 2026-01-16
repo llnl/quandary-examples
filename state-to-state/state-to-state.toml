@@ -1,0 +1,70 @@
+# State-to-state transfer optimization example
+# Single-oscillator system optimizing state transfer
+
+# System settings
+nlevels = [4]
+nessential = [3]
+ntime = 3302
+dt = 0.03028467595396729
+transfreq = [4.10595]
+selfkerr = [0.2198]
+crosskerr = { }
+Jkl = { }
+rotfreq = [4.10595]
+
+# Decoherence settings (none = Schroedinger equation)
+decoherence = { type = "none" }
+
+# Initial conditions - pure state |1>
+initial_condition = { type = "state", levels = [1] }
+
+# Control parameterization
+control_parameterization = { type = "spline", num = 12 }
+
+# Carrier wave frequencies (GHz)
+carrier_frequency = [0.0, -0.2198]
+
+# Control initialization
+control_initialization = { type = "random", amplitude = 0.001 }
+
+# Control bounds (GHz)
+control_bounds = 0.004
+
+# Enforce boundary conditions
+control_enforceBC = false
+
+# Optimization target - state from file
+optim_target = { type = "state", filename = "./targetstate.dat" }
+
+# Objective function
+optim_objective = "Jtrace"
+
+# Weights for initial conditions
+optim_weights = 1.0
+
+# Optimization tolerances
+optim_tolerance = { grad_abs = 1e-4, grad_rel = 1e-4, final_cost = 0.0001, infidelity = 1e-5 }
+
+# Maximum iterations
+optim_maxiter = 100
+
+# Tikhonov regularization
+optim_tikhonov = { coeff = 0.0001, use_x0 = false }
+
+# Penalty terms
+optim_penalty = { leakage = 0.1, weightedcost = 0.1, weightedcost_width = 0.0, dpdm = 0.01, energy = 0.1 }
+
+# Output settings
+datadir = "./data_out"
+output_type = ["expectedEnergy", "population"]
+output_timestep_stride = 1
+output_optimization_stride = 1
+
+# Runtype
+runtype = "optimization"
+
+# Solver settings
+usematfree = true
+linearsolver = { type = "gmres", maxiter = 20 }
+timestepper = "IMR"
+rand_seed = 1234
