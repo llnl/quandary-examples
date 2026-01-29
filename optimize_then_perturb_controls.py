@@ -1,5 +1,6 @@
 #  Quandary's python interface functions are defined in /path/to/quandary/quandary.py. Import them here. 
 from quandary import * 
+import numpy as np
 
 ## Two qubit test case, demonstrating the use of piecewise constant control functions with total variation penalty term. It also demonstrates how to perturb the control vector and evaluate the corresponding fidelity.
 # Here, the qubits have two levels each, no guard levels, with a dipole-dipole coupling 5MHz ##

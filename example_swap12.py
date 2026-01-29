@@ -1,5 +1,6 @@
 #  Quandary's python interface functions are defined in /path/to/quandary/quandary.py. Import them here. 
 from quandary import * 
+import numpy as np
 
 ## Two qubit test case for the SWAP gate, two essential levels each, no guard levels ##
 

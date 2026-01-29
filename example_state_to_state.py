@@ -1,5 +1,6 @@
 #  Quandary's python interface functions are defined in /path/to/quandary/quandary.py. Import them here. 
 from quandary import * 
+import numpy as np
 
 ## One qudit test case: State preparation (state-to-state) of the GHZ state ##
 
