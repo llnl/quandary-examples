@@ -12,7 +12,7 @@ transition_frequency = [4.10595, 4.81526]
 # Self-kerr frequencies for each oscillator ("\xi_k", multiplying a_k^d a_k^d a_k a_k,  GHz, will be multiplied by 2*PI)
 selfkerr = [0.2198, 0.2252]
 # Cross-kerr coupling frequencies for each oscillator coupling k<->l ("\xi_kl", multiplying a_k^d a_k a_l^d a_l, GHz, will be multiplied by 2*PI)
-# Format: x = [x_01, x_02,...,x_12, x_13....] -> number of elements here should be (noscillators-1)*noscillators/2 !
+# Format: x = [x_01, x_02,...,x_12, x_13....] -> number of elements here should be (noscillators-1)*noscillators/2. A single value applies to all couplings.
 crosskerr = 0.1
 # Dipole-dipole coupling frequencies for each oscillator coupling k<->l ("J_kl", multiplying a_k^d a_l + a_k a_l^d, GHz, will be multiplied by 2*PI)
 # Format Jkl = [J_01, J_02, ..., J12, J13, ...] -> number of elements are (noscillators-1)*noscillators/2
@@ -29,13 +29,13 @@ decoherence = { type = "none" }
 # Time of dephase collapse operation (T2) per oscillator (gamma_2 = 1/T_2) (only active if 'collapse_type' is NOT 'none')
 #decoherence = { type = "dephase", dephase_time = [28000.0, 28000.0] }
 # Specify the initial conditions:
-# "file, /path/to/file" - read one specific initial condition from file (Format: one column containing the state vector or the vectorized density matrix, first all real elements, then all imaginary elements, length of the file must be 2N (for state vector) or 2N^2 (for vectorized density matrix))
-# "state" - init with kronecker product of pure vectors using 'levels' array, e.g. {type = "state", levels = [1, 0]} sets the initial state |1> \otimes |0>
-# "ensemble, <list, of, oscillator, IDs>" - ensemble state for the subsystems indicated by the list of oscillators, ground state for the other oscillators
-# "diagonal, <list, of, oscillator, IDs>" - all unit vectors that correspond to the diagonal of the (full or reduced) density matrix for the subsystem defined by the list of oscillator IDs.
-# "basis, <list, of, oscillator, IDs>" - basis for the (full or reduced) density matrix for the subsystem defined by the list of oscillator IDs.
-# "3states"  - uses the three specific initial states from C. Koch paper for gate optimization ("Optimal control theory for a unitary operation under dissipative evolution", New Journal of Physics, 2014)
-# "Nplus1"   - N+1 initial conditions from C. Kochs paper for gate optimization ("Optimal control theory for a unitary operation under dissipative evolution", New Journal of Physics, 2014)
+# type = "file" - read from file (one column: vectorized state/density matrix, first real then imaginary parts)
+# type = "state" - kronecker product of pure vectors, e.g. {type = "state", levels = [1, 0]} sets |1> \otimes |0>
+# type = "ensemble" - ensemble state for specified subsystems, ground state for others
+# type = "diagonal" - all unit vectors for the diagonal of the density matrix for specified subsystems
+# type = "basis" - basis for the density matrix for specified subsystems
+# type = "3states" - three specific initial states from C. Koch paper (New Journal of Physics, 2014)
+# type = "Nplus1" - N+1 initial conditions from C. Koch paper (New Journal of Physics, 2014)
 initial_condition = { type = "basis" }
 #initial_condition = { type = "diagonal", subsystem = [0] }
 #initial_condition = { type = "file", filename = "./initcond/alice_sumbasis.dat" }
@@ -51,11 +51,9 @@ parameterization = [
   { subsystem = 0, type = "spline", num = 150 },
   { subsystem = 1, type = "spline", num = 150 }
 ]
-# Set the initial control parameter values for each oscillator. Give one option for each segmemt. Format: "type, parameter" where <type>='constant', 'random', or 'random_seed', or 'file', and <parameter> is either the max amplitude, or the parameter file name [Note: Reading the initialization from file applies to *all* subsystems, i.e. the file should contain *all* parameters for all oscillators]. Multiple segments are listed behind each other, e.g. constant, 3.0, random 0.11, constant 1.0
-initialization = [
-  { subsystem = 0, type = "file", filename = "params_optimized.dat" },
-  { subsystem = 1, type = "file", filename = "params_optimized.dat" }
-]
+# Set the initial control parameter values. Types: "constant", "random", or "file".
+# For "file" type, specify once (file contains all parameters for all subsystems).
+initialization = { type = "file", filename = "params_optimized.dat" }
 # Enforce control boundary conditions? (start and end at zero? Default: true)
 zero_boundary_condition = false
 # Specify bounds for the control parameters for each oscillator. One double for each segment.
@@ -68,17 +66,13 @@ carrier_frequency = [
 
 [optimization]
 # Specify the optimization target state \rho(T):
-# "gate, <type>" where <type> can be "cnot", "cqnot", "swap", "swap0q", "qft", "xgate", "ygate", "zgate", "hadamard", "file, /path/to/file": the target state is the gate-transformed initial conditions. If the gate is read from file, the file format is the vectorized target gate, first all real parts, then all imaginary parts (2*Ness*Ness rows, one value per row).
-# "pure, <m1>, <m2>, ... , <mQ>"  - prepare the pure state |m1 m2 m3 ... mQ>. Note: Each oscillators pure target state is separated by commas!
-# "file, /path/to/file" - read a target state from file (Format: one column containing the state vector or the vectorized density matrix, first all real elements, then all imaginary elements, length of the file must be 2N (for state vector) or 2N^2 (for vectorized density matrix))
+# type = "gate" - target is a gate transformation. gate_type can be "cnot", "cqnot", "swap", "swap0q", "qft", "xgate", "ygate", "zgate", "hadamard", or read from file.
+# type = "state" - prepare a pure state, e.g. {type = "state", levels = [1, 0]} for |1> \otimes |0>
+# type = "file" - read target from file (vectorized state/density matrix, first real then imaginary parts)
+# gate_rot_freq: gate rotation frequencies (GHz, will be multiplied by 2*PI). By default, uses rotational frequencies of the system. Set to 0.0 for Lab frame gate. One number per oscillator; if fewer given, last value used for remaining.
 target = { type = "gate", gate_type = "cnot", gate_rot_freq = 0.0 }
-# Specify the objective function
-# "Jfrobenius", "Jtrace", or "Jmeasure"
+# Specify the objective function: "Jfrobenius", "Jtrace", or "Jmeasure"
 objective = "Jtrace"
-# If optimization target is a gate, specify the gate rotation frequencies (GHz, will be multiplied by 2*PI). By default, those are the rotational frequencies of the system, so commenting out this line ensures that gate rotation matches the rotational frame frequencies. Otherwise, they can be set differently here, e.g. 0.0, 0.0,... for Lab frame gate.
-# Format: one number per oscillator. If less numbers are given, the *last* one will be used to all remaining oscillators.
-# Weights for summing over initial conditions in objective function (beta_i). Format: list of values separated by comma. If less values than initial conditions are given, the *last* value will be used for the remaining initial conditions.
-weights = [1.0]
 # Optimization stopping tolerance based on gradient norm (absolute: ||G|| < atol )
 tolerance = {
   grad_abs = 1e-7,
