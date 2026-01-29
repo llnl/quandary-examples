@@ -1,0 +1,58 @@
+[system]
+nlevels = [4]
+nessential = [3]
+ntime = 3302
+dt = 0.03028467595396729
+transition_frequency = [4.10595]
+rotation_frequency = [4.10595]
+selfkerr = [0.2198]
+crosskerr = 0.0
+dipole_coupling = 0.0
+decoherence = { type = "none" }
+# Specify the initial state that is to be transferred here. Could either be a pure state, in which case you can use a string of type "pure, i1, i2, i3..." where 'ix' denotes the state of each involved oscillator, or alternative an initial condition can be read from file (see documentation)
+initial_condition = { type = "state", levels = [1] }
+
+[control]
+parameterization = { subsystem = 0, type = "spline", num = 12 }
+initialization = { subsystem = 0, type = "random", amplitude = 0.001 }
+amplitude_bound = 0.004
+carrier_frequency = { subsystem = 0, value = [0.0, -0.2198] }
+zero_boundary_condition = false
+
+[optimization]
+# Specify the target state here. Should be read from file. Format: Column vector being the vectorized target state, first all real parts, then all imaginary parts.
+target = { type = "state", filename = "./targetstate.dat" }
+objective = "Jtrace"
+weights = [1.0]
+tolerance = {
+  grad_abs = 1e-4,
+  grad_rel = 1e-4,
+  final_cost = 1e-4,
+  infidelity = 1e-5
+}
+maxiter = 100
+tikhonov = {
+  coeff = 0.0001,
+  use_x0 = false
+}
+penalty = {
+  leakage = 0.1,
+  energy = 0.1,
+  dpdm = 0.01,
+  variation = 0.0,
+  weightedcost = 0.0,
+  weightedcost_width = 0.0
+}
+
+[output]
+directory = "./data_out"
+observables = ["expectedEnergy", "population"]
+timestep_stride = 1
+optimization_stride = 1
+
+[solver]
+runtype = "optimization"
+usematfree = true
+linearsolver = { type = "gmres", maxiter = 20 }
+timestepper = "IMR"
+rand_seed = 1234
