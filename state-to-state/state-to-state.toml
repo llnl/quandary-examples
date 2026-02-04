@@ -6,7 +6,7 @@ dt = 0.03028467595396729
 transition_frequency = [4.10595]
 rotation_frequency = [4.10595]
 selfkerr = [0.2198]
-crosskerr = 0.0
+crosskerr_coupling = 0.0
 dipole_coupling = 0.0
 decoherence = { type = "none" }
 # Specify the initial state to be transferred. Use {type = "state", levels = [i1, i2, ...]} for a pure product state where each value is the level of that subsystem, or {type = "file", filename = "..."} to read from file.
