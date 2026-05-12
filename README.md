@@ -11,9 +11,9 @@ See [Quandary](https://github.com/LLNL/quandary) for instructions on running thr
 Gate optimization CNOT:
   * Optimizes for a CNOT gate on two coupled qubits each modelled with 2 energy levels. 
   * T = 200ns, time step size = 0.1ns
-  * 'cnot.cfg': Runs a closed-system (Schroedinger eq.) optimization using random initial control parameters. Can be run on up to 4 cores (one for each initial basis state)
-  * 'cnot_FWD_optimized.cfg': Evaluates the fidelity of the control parameters stored in 'params_optimized.dat' by forward simulation (Schroedinger's equation)
-  * 'cnot_FWD_optimized_withnoise.cfg': Same as above, but simulates with Lindblads master equation (with decoherence). 
+  * 'cnot.toml': Runs a closed-system (Schroedinger eq.) optimization using random initial control parameters. Can be run on up to 4 cores (one for each initial basis state)
+  * 'cnot_FWD_optimized.toml': Evaluates the fidelity of the control parameters stored in 'params_optimized.dat' by forward simulation (Schroedinger's equation)
+  * 'cnot_FWD_optimized_withnoise.toml': Same as above, but simulates with Lindblads master equation (with decoherence). 
 
 Gate optimization SWAP02:
   * Considers a qudid modelled with 3 essential energy levels and one guard level
