@@ -1,5 +1,6 @@
 #  Quandary's python interface functions are defined in /path/to/quandary/quandary.py. Import them here. 
 from quandary import * 
+import numpy as np
 
 ## Two qubit test case: CNOT gate, two levels each, 1 or 2 guard levels, dipole-dipole coupling 5MHz ##
 Ne = [2, 2]

@@ -1,5 +1,6 @@
 #  Quandary's python interface functions are defined in /path/to/quandary/quandary.py. Import them here. 
 from quandary import * 
+import numpy as np
 
 ## Two qubit test case, demonstrating the use of piecewise constant control functions with total variation penalty term. CNOT gate, two levels each, no guard levels, dipole-dipole coupling 5KHz ##
 

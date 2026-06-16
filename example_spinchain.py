@@ -1,5 +1,8 @@
 #  Quandary's python interface functions are defined in /path/to/quandary/quandary.py. Import them here. 
 from quandary import * 
+import numpy as np
+import matplotlib.pyplot as plt
+
 np.random.seed(9001)
 
 ### Define some case's coefficients
